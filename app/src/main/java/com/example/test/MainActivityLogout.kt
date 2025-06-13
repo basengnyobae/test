@@ -7,8 +7,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity() {
+class MainActivityLogout : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var welcomeText: TextView
     private val courses = listOf(
@@ -18,20 +20,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_logout)
 
         recyclerView = findViewById(R.id.rvCourses)
         welcomeText = findViewById(R.id.tvWelcome)
 
+        val user = Firebase.auth.currentUser
+        welcomeText.text = "Selamat datang, ${user?.email}"
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = CourseAdapter(courses)
 
-        findViewById<Button>(R.id.btnLogin).setOnClickListener {
+        findViewById<Button>(R.id.btnLogout).setOnClickListener {
+            Firebase.auth.signOut()
             startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
-        findViewById<Button>(R.id.btnRegister).setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
             finish()
         }
     }
