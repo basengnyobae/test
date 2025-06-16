@@ -12,11 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.test"
         tools:targetApi="31">
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainActivityLogout" />
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".MainActivityLogout"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity"
-        android:exported="true">
+        android:exported="true"
+            android:screenOrientation="portrait">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
