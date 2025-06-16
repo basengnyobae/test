@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
                                 db.collection("users").document(userId).set(user)
                                     .addOnSuccessListener {
                                         Toast.makeText(this, "Pendaftaran berhasil", Toast.LENGTH_SHORT).show()
-                                        startActivity(Intent(this, MainActivity::class.java))
+                                        startActivity(Intent(this, LoginActivity::class.java))
                                         finish()
                                     }
                                     .addOnFailureListener { e ->
