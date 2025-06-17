@@ -9,6 +9,7 @@
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
