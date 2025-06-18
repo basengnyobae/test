@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -14,23 +13,21 @@
         android:orientation="vertical"
         android:layout_marginBottom="56dp">
 
-        <TextView
-            android:id="@+id/tvWelcome"
-            android:text="Selamat datang!"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCourses"
+        <Button
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:text="Login" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register" />
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -38,6 +35,6 @@
         app:menu="@menu/navigation_bar"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"/>
+        app:itemTextColor="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

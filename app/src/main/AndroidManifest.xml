@@ -16,6 +16,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".AccountActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivityLogout"
             android:screenOrientation="portrait" />
         <activity android:name=".MainActivity"
