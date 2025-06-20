@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -26,7 +27,10 @@ class RegisterActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
 
-        findViewById<Button>(R.id.btnRegister).setOnClickListener {
+        val btnRegister = findViewById<Button>(R.id.btnRegister)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+
+        btnRegister.setOnClickListener {
             val name = etName.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
@@ -40,29 +44,43 @@ class RegisterActivity : AppCompatActivity() {
                                 "name" to name,
                                 "email" to email
                             )
+
                             if (userId != null) {
                                 db.collection("users").document(userId).set(user)
                                     .addOnSuccessListener {
-                                        Toast.makeText(this, "Pendaftaran berhasil", Toast.LENGTH_SHORT).show()
-                                        startActivity(Intent(this, LoginActivity::class.java))
-                                        finish()
+                                        // Tampilkan dialog sukses
+                                        showSuccessDialog()
                                     }
                                     .addOnFailureListener { e ->
                                         Toast.makeText(this, "Gagal simpan data: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
                             }
                         } else {
-                            Toast.makeText(this, "Gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Gagal daftar: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
-                Toast.makeText(this, "Isi semua data & password ≥ 6 karakter", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Isi semua data & password minimal 6 karakter", Toast.LENGTH_SHORT).show()
             }
         }
 
-        findViewById<Button>(R.id.btnLogin).setOnClickListener {
+        btnLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    private fun showSuccessDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Pendaftaran Berhasil")
+        builder.setMessage("Akun berhasil dibuat. Silakan login untuk melanjutkan.")
+        builder.setCancelable(false)
+        builder.setPositiveButton("Login") { dialog, _ ->
+            dialog.dismiss()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.show()
     }
 }

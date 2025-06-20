@@ -1,4 +1,5 @@
 package com.example.test
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,13 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class CourseAdapter(private val courseList: List<Course>) :
+class CourseAdapter(private val courseList: MutableList<Course>) :
     RecyclerView.Adapter<CourseAdapter.CourseViewHolder>() {
 
     class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title = itemView.findViewById<TextView>(R.id.tvCourseTitle)
-        val instructor = itemView.findViewById<TextView>(R.id.tvInstructor)
-        val thumbnail = itemView.findViewById<ImageView>(R.id.ivThumbnail)
+        val title: TextView = itemView.findViewById(R.id.tvCourseTitle)
+        val instructor: TextView = itemView.findViewById(R.id.tvInstructor)
+        val thumbnail: ImageView = itemView.findViewById(R.id.ivThumbnail)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
@@ -30,4 +31,10 @@ class CourseAdapter(private val courseList: List<Course>) :
     }
 
     override fun getItemCount(): Int = courseList.size
+
+    fun updateList(newList: List<Course>) {
+        courseList.clear()
+        courseList.addAll(newList)
+        notifyDataSetChanged()
+    }
 }

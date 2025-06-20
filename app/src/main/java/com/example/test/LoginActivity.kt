@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            startActivity(Intent(this, MainActivityLogout::class.java))
+                            startActivity(Intent(this, MainActivity::class.java))
                             finish()
                         } else {
                             Toast.makeText(this, "Login gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
