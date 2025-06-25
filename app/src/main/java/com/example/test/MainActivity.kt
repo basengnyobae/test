@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
 
-        loadFragment(HomeFragment()) // Tampilkan fragment awal
+        loadFragment(HomeFragment())
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNav.setOnItemSelectedListener { item ->
@@ -26,6 +26,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.akun -> {
                     loadFragment(AccountFragment())
+                    true
+                }
+                R.id.my_courses -> {
+                    loadFragment(MyCoursesFragment())
                     true
                 }
                 else -> false

@@ -1,5 +1,6 @@
 package com.example.test
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,17 @@ class CourseAdapter(private val courseList: MutableList<Course>) :
         holder.title.text = course.title
         holder.instructor.text = course.instructor
         Glide.with(holder.itemView).load(course.thumbnailUrl).into(holder.thumbnail)
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, DetailCourseActivity::class.java)
+            intent.putExtra("title", course.title)
+            intent.putExtra("instructor", course.instructor)
+            intent.putExtra("thumbnailUrl", course.thumbnailUrl)
+            intent.putExtra("id", course.id)
+            context.startActivity(intent)
+        }
+
     }
 
     override fun getItemCount(): Int = courseList.size
