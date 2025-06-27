@@ -55,12 +55,29 @@
             android:layout_marginTop="12dp" />
 
         <Button
+            android:id="@+id/btnEditCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Course"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"/>
+
+        <Button
             android:id="@+id/btnAddModule"
             android:text="Tambah Modul"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnDeleteCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hapus Course"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 </ScrollView>

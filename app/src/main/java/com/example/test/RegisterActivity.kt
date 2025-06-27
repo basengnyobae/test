@@ -42,8 +42,7 @@ class RegisterActivity : AppCompatActivity() {
                             val userId = auth.currentUser?.uid
                             val user = hashMapOf(
                                 "name" to name,
-                                "email" to email,
-                                "role" to "user"
+                                "email" to email
                             )
 
                             if (userId != null) {
