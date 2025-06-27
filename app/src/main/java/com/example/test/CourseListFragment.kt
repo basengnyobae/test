@@ -1,4 +1,4 @@
-package com.example.test
+package com.example.test.com.example.test
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,9 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.test.Course
+import com.example.test.CourseAdapter
+import com.example.test.R
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CourseListFragment : Fragment() {

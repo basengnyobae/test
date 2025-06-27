@@ -33,6 +33,12 @@ class DetailCourseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail_course)
 
         courseId = intent.getStringExtra("id") ?: ""
+        if (courseId.isEmpty()) {
+            Toast.makeText(this, "ID kursus tidak ditemukan", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         val title = intent.getStringExtra("title") ?: ""
         val instructor = intent.getStringExtra("instructor") ?: ""
         val thumbnailUrl = intent.getStringExtra("thumbnailUrl") ?: ""
@@ -44,15 +50,17 @@ class DetailCourseActivity : AppCompatActivity() {
         enrollButton = findViewById(R.id.btnEnroll)
 
         val btnAddModule = findViewById<Button>(R.id.btnAddModule)
-        if (userId == "3upmgWQdKaYriqezsiP6iK8wck73") {
-            btnAddModule.visibility = View.VISIBLE
-            btnAddModule.setOnClickListener {
-                val intent = Intent(this, AddModuleActivity::class.java)
-                intent.putExtra("courseId", courseId)
-                startActivity(intent)
+        checkUserRole { role ->
+            if (role == "admin") {
+                btnAddModule.visibility = View.VISIBLE
+                btnAddModule.setOnClickListener {
+                    val intent = Intent(this, AddModuleActivity::class.java)
+                    intent.putExtra("courseId", courseId)
+                    startActivity(intent)
+                }
+            } else {
+                btnAddModule.visibility = View.GONE
             }
-        } else {
-            btnAddModule.visibility = View.GONE
         }
 
         tvTitle.text = title
@@ -60,12 +68,27 @@ class DetailCourseActivity : AppCompatActivity() {
         Glide.with(this).load(thumbnailUrl).into(ivThumbnail)
 
         checkEnrollmentStatus()
-
         loadModulesAndProgress()
 
         enrollButton.setOnClickListener {
             enrollToCourse()
         }
+    }
+
+
+    private fun checkUserRole(callback: (String) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        Firebase.firestore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { doc ->
+                val role = doc.getString("role") ?: "user"
+                callback(role)
+            }
+            .addOnFailureListener {
+                callback("user")
+            }
     }
 
     private fun checkEnrollmentStatus() {

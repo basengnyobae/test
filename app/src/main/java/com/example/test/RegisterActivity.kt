@@ -42,13 +42,13 @@ class RegisterActivity : AppCompatActivity() {
                             val userId = auth.currentUser?.uid
                             val user = hashMapOf(
                                 "name" to name,
-                                "email" to email
+                                "email" to email,
+                                "role" to "user"
                             )
 
                             if (userId != null) {
                                 db.collection("users").document(userId).set(user)
                                     .addOnSuccessListener {
-                                        // Tampilkan dialog sukses
                                         showSuccessDialog()
                                     }
                                     .addOnFailureListener { e ->

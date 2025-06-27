@@ -22,7 +22,7 @@
             android:text="Course Title"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layoutMarginTop="12dp"/>
+            android:layout_marginTop="12dp" />
 
         <TextView
             android:id="@+id/tvDetailInstructor"
@@ -30,14 +30,14 @@
             android:layout_height="wrap_content"
             android:text="Instructor Name"
             android:textSize="16sp"
-            android:layoutMarginTop="6dp"/>
+            android:layout_marginTop="6dp" />
 
         <Button
             android:id="@+id/btnEnroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enroll"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp" />
 
         <ProgressBar
             android:id="@+id/progressBarCourse"
@@ -46,13 +46,13 @@
             android:layout_marginTop="24dp"
             android:progress="0"
             android:max="100"
-            style="?android:attr/progressBarStyleHorizontal"/>
+            style="?android:attr/progressBarStyleHorizontal" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvModules"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp" />
 
         <Button
             android:id="@+id/btnAddModule"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 </ScrollView>
