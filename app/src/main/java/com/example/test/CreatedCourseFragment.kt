@@ -20,7 +20,6 @@ class CreatedCourseFragment : Fragment(R.layout.fragment_created_courses) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvCreatedCourses)
         adapter = CourseAdapter(mutableListOf(),
             onClick = { course ->  },
-            onDelete = { course -> deleteCourse(course.id) }
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -32,33 +31,6 @@ class CreatedCourseFragment : Fragment(R.layout.fragment_created_courses) {
 
         loadCourses()
 
-    }
-    private fun deleteCourse(courseId: String) {
-        val db = Firebase.firestore
-        val courseRef = db.collection("courses").document(courseId)
-        val modulesRef = courseRef.collection("modules")
-
-        modulesRef.get()
-            .addOnSuccessListener { moduleSnap ->
-                val batch = db.batch()
-                for (doc in moduleSnap) {
-                    batch.delete(doc.reference)
-                }
-
-                batch.commit().addOnSuccessListener {
-                    courseRef.delete()
-                        .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Course berhasil dihapus", Toast.LENGTH_SHORT).show()
-                            loadCourses()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), "Gagal menghapus course: ${it.message}", Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Gagal memuat modul: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
     }
     private fun loadCourses() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return

@@ -36,13 +36,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnDeleteCourse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hapus"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
-
     </LinearLayout>
 </LinearLayout>

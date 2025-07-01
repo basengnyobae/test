@@ -20,18 +20,19 @@ class DetailCourseActivity : AppCompatActivity() {
 
     private var courseId = ""
     private var userId = ""
-    private lateinit var instructorId: String
     private lateinit var enrollButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var rvModules: RecyclerView
     private lateinit var btnAddModule: Button
     private lateinit var btnEditCourse: Button
+    private lateinit var btnDeleteCourse: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_detail_course)
 
+        // Ambil ID dari intent & user login
         courseId = intent.getStringExtra("id") ?: ""
         userId = auth.currentUser?.uid ?: ""
 
@@ -41,6 +42,7 @@ class DetailCourseActivity : AppCompatActivity() {
             return
         }
 
+        // Inisialisasi UI
         val tvTitle = findViewById<TextView>(R.id.tvDetailTitle)
         val tvInstructor = findViewById<TextView>(R.id.tvDetailInstructor)
         val ivThumbnail = findViewById<ImageView>(R.id.ivDetailThumbnail)
@@ -49,12 +51,14 @@ class DetailCourseActivity : AppCompatActivity() {
         rvModules = findViewById(R.id.rvModules)
         btnAddModule = findViewById(R.id.btnAddModule)
         btnEditCourse = findViewById(R.id.btnEditCourse)
+        btnDeleteCourse = findViewById(R.id.btnDeleteCourse)
 
-        // Default hide buttons
+        // Sembunyikan tombol terlebih dahulu
         btnAddModule.visibility = View.GONE
         btnEditCourse.visibility = View.GONE
+        btnDeleteCourse.visibility = View.GONE
 
-        // Load course detail and setup UI
+        // Ambil data course
         db.collection("courses").document(courseId).get()
             .addOnSuccessListener { doc ->
                 if (!doc.exists()) {
@@ -72,10 +76,11 @@ class DetailCourseActivity : AppCompatActivity() {
                 tvInstructor.text = instructor
                 Glide.with(this).load(thumbnailUrl).into(ivThumbnail)
 
-                // Tampilkan tombol edit dan tambah modul jika user adalah pemilik course
+                // Tampilkan tombol jika user adalah instruktur
                 if (userId == instructorId) {
                     btnAddModule.visibility = View.VISIBLE
                     btnEditCourse.visibility = View.VISIBLE
+                    btnDeleteCourse.visibility = View.VISIBLE
 
                     btnAddModule.setOnClickListener {
                         val intent = Intent(this, AddModuleActivity::class.java)
@@ -88,9 +93,13 @@ class DetailCourseActivity : AppCompatActivity() {
                         intent.putExtra("courseId", courseId)
                         startActivity(intent)
                     }
+
+                    btnDeleteCourse.setOnClickListener {
+                        deleteCourse(courseId)
+                    }
                 }
 
-                // Setelah detail berhasil dimuat, lanjut ke progress & modules
+                // Lanjut ke progress & modul
                 checkEnrollmentStatus()
                 loadModulesAndProgress()
             }
@@ -101,17 +110,6 @@ class DetailCourseActivity : AppCompatActivity() {
 
         enrollButton.setOnClickListener {
             enrollToCourse()
-
-            val btnDeleteCourse = findViewById<Button>(R.id.btnDeleteCourse)
-            btnDeleteCourse.visibility = View.GONE
-
-            if (userId == instructorId) {
-                btnDeleteCourse.visibility = View.VISIBLE
-                btnDeleteCourse.setOnClickListener {
-                    deleteCourse(courseId)
-                }
-            }
-
         }
     }
 
@@ -126,35 +124,6 @@ class DetailCourseActivity : AppCompatActivity() {
                     enrollButton.text = "Sudah Terdaftar"
                     enrollButton.isEnabled = false
                 }
-            }
-    }
-
-    private fun deleteCourse(courseId: String) {
-        // Hapus semua modul terlebih dahulu
-        val courseRef = db.collection("courses").document(courseId)
-        val modulesRef = courseRef.collection("modules")
-
-        modulesRef.get()
-            .addOnSuccessListener { moduleSnap ->
-                val batch = db.batch()
-                for (doc in moduleSnap) {
-                    batch.delete(doc.reference)
-                }
-
-                // Setelah modul dihapus, hapus course-nya
-                batch.commit().addOnSuccessListener {
-                    courseRef.delete()
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Course berhasil dihapus", Toast.LENGTH_SHORT).show()
-                            finish() // kembali ke fragment sebelumnya
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Gagal menghapus course: ${it.message}", Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal memuat modul: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -199,14 +168,23 @@ class DetailCourseActivity : AppCompatActivity() {
                     .addOnSuccessListener { progressDoc ->
                         val completed = progressDoc.get("completedModuleIds") as? List<String> ?: emptyList()
 
-                        val adapter = ModuleAdapter(modules, completed,
+                        val adapter = ModuleAdapter(
+                            modules,
+                            completed,
                             onChecked = { module, checked ->
                                 updateProgress(progressRef, module.id, checked)
                             },
                             onDelete = { module ->
                                 deleteModule(courseId, module.id)
+                            },
+                            onItemClick = { module ->
+                                val intent = Intent(this, VideoPlayerActivity::class.java)
+                                intent.putExtra("title", module.title)
+                                intent.putExtra("videoUrl", module.videoUrl) // pastikan field ini ada di model
+                                startActivity(intent)
                             }
                         )
+
 
                         rvModules.layoutManager = LinearLayoutManager(this)
                         rvModules.adapter = adapter
@@ -218,6 +196,7 @@ class DetailCourseActivity : AppCompatActivity() {
                     }
             }
     }
+
 
     private fun updateProgress(ref: DocumentReference, moduleId: String, checked: Boolean) {
         db.runTransaction { transaction ->
@@ -238,9 +217,37 @@ class DetailCourseActivity : AppCompatActivity() {
 
             null
         }.addOnSuccessListener {
-            loadModulesAndProgress() // refresh
+            loadModulesAndProgress()
         }
     }
+
+    private fun deleteCourse(courseId: String) {
+        val courseRef = db.collection("courses").document(courseId)
+        val modulesRef = courseRef.collection("modules")
+
+        modulesRef.get()
+            .addOnSuccessListener { moduleSnap ->
+                val batch = db.batch()
+                for (doc in moduleSnap) {
+                    batch.delete(doc.reference)
+                }
+
+                batch.commit().addOnSuccessListener {
+                    courseRef.delete()
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Course berhasil dihapus", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Gagal menghapus course: ${it.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal memuat modul: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun deleteModule(courseId: String, moduleId: String) {
         db.collection("courses")
             .document(courseId)
@@ -249,11 +256,10 @@ class DetailCourseActivity : AppCompatActivity() {
             .delete()
             .addOnSuccessListener {
                 Toast.makeText(this, "Modul berhasil dihapus", Toast.LENGTH_SHORT).show()
-                loadModulesAndProgress() // Refresh setelah dihapus
+                loadModulesAndProgress()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal menghapus modul: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

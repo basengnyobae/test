@@ -10,44 +10,47 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ModuleAdapter(
-    private val modules: List<Module>,
-    private val completedIds: List<String>,
+    private val moduleList: List<Module>,
+    private val completedModules: List<String>,
     private val onChecked: (Module, Boolean) -> Unit,
-    private val onDelete: (Module) -> Unit // tambahan
+    private val onDelete: (Module) -> Unit,
+    private val onItemClick: ((Module) -> Unit)? = null
 ) : RecyclerView.Adapter<ModuleAdapter.ModuleViewHolder>() {
 
-    class ModuleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView = view.findViewById(R.id.tvModuleTitle)
-        val checkBox: CheckBox = view.findViewById(R.id.cbComplete)
-        val btnDelete: Button = view.findViewById(R.id.btnDeleteModule)
+    inner class ModuleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView = itemView.findViewById(R.id.tvModuleTitle)
+        val duration: TextView = itemView.findViewById(R.id.tvModuleDuration)
+        val checkBox: CheckBox = itemView.findViewById(R.id.cbModuleCompleted)
+        val btnDelete: Button = itemView.findViewById(R.id.btnDeleteModule)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_module, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_module, parent, false)
         return ModuleViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ModuleViewHolder, position: Int) {
-        val module = modules[position]
+        val module = moduleList[position]
         holder.title.text = module.title
-        holder.checkBox.isChecked = completedIds.contains(module.id)
-
-        holder.checkBox.setOnClickListener {
-            onChecked(module, holder.checkBox.isChecked)
-        }
-
-        holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, VideoPlayerActivity::class.java)
-            intent.putExtra("videoUrl", module.videoUrl)
-            context.startActivity(intent)
+        holder.duration.text = module.duration
+        holder.checkBox.setOnCheckedChangeListener(null)
+        holder.checkBox.isChecked = completedModules.contains(module.id)
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            onChecked(module, isChecked)
         }
 
         holder.btnDelete.setOnClickListener {
             onDelete(module)
         }
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(module)
+            val context = holder.itemView.context
+            val intent = Intent(context, VideoPlayerActivity::class.java)
+            intent.putExtra("videoUrl", module.videoUrl) // ← pastikan model Module punya field ini
+            context.startActivity(intent)
+        }
     }
 
-    override fun getItemCount(): Int = modules.size
+    override fun getItemCount(): Int = moduleList.size
 }

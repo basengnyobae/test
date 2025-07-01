@@ -1,4 +1,4 @@
-package com.example.test.com.example.test
+package com.example.test
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +9,6 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.test.Course
-import com.example.test.CourseAdapter
-import com.example.test.DetailCourseActivity
-import com.example.test.LoginActivity
-import com.example.test.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -46,12 +41,13 @@ class CourseListFragment : Fragment() {
                 startActivity(intent)
             }
         }
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
         loadCourses()
 
-        // Filter saat mengetik
+        // Jalankan filter saat pengguna menekan enter
         searchField.setOnEditorActionListener { _, _, _ ->
             val keyword = searchField.text.toString().trim()
             filterCourses(keyword)
@@ -68,9 +64,13 @@ class CourseListFragment : Fragment() {
                 courseList.clear()
                 for (doc in result) {
                     val course = doc.toObject(Course::class.java)
+                    course.id = doc.id // ← ini penting
                     courseList.add(course)
                 }
-                adapter.notifyDataSetChanged()
+                adapter.updateList(courseList)
+            }
+            .addOnFailureListener {
+                // Opsional: tambahkan log/Toast jika gagal
             }
     }
 
