@@ -1,5 +1,6 @@
 package com.example.test
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -18,7 +20,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = CourseAdapter(mutableListOf())
+        adapter = CourseAdapter(mutableListOf()) { course ->
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                startActivity(Intent(requireContext(), LoginActivity::class.java))
+            } else {
+                val intent = Intent(requireContext(), DetailCourseActivity::class.java)
+                intent.putExtra("id", course.id)
+                intent.putExtra("title", course.title)
+                intent.putExtra("instructor", course.instructor)
+                intent.putExtra("thumbnailUrl", course.thumbnailUrl)
+                startActivity(intent)
+            }
+        }
+
         recyclerView.adapter = adapter
 
         progressBar.visibility = View.VISIBLE

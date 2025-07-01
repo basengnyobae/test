@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 
 class CourseAdapter(
     private val courseList: MutableList<Course>,
+    private val onClick: ((Course) -> Unit)? = null,
     private val onDelete: ((Course) -> Unit)? = null
 ) : RecyclerView.Adapter<CourseAdapter.CourseViewHolder>() {
 
@@ -34,6 +35,15 @@ class CourseAdapter(
         holder.instructor.text = course.instructor
         Glide.with(holder.itemView).load(course.thumbnailUrl).into(holder.thumbnail)
 
+        if (onDelete != null) {
+            holder.btnDelete.visibility = View.VISIBLE
+            holder.btnDelete.setOnClickListener {
+                onDelete.invoke(course)
+            }
+        } else {
+            holder.btnDelete.visibility = View.GONE
+        }
+
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, DetailCourseActivity::class.java)
@@ -43,11 +53,8 @@ class CourseAdapter(
             intent.putExtra("id", course.id)
             context.startActivity(intent)
         }
-
-        holder.btnDelete.setOnClickListener {
-            onDelete?.invoke(course)
-        }
     }
+
 
     override fun getItemCount(): Int = courseList.size
 
@@ -57,4 +64,3 @@ class CourseAdapter(
         notifyDataSetChanged()
     }
 }
-

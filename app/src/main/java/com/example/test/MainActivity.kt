@@ -1,10 +1,12 @@
 package com.example.test
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.test.com.example.test.CourseListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.course -> {
+                    if (FirebaseAuth.getInstance().currentUser == null) {
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        return@setOnItemSelectedListener false
+                    }
                     loadFragment(CourseListFragment())
                     true
                 }

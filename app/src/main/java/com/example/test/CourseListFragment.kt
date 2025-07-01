@@ -1,5 +1,6 @@
 package com.example.test.com.example.test
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.test.Course
 import com.example.test.CourseAdapter
+import com.example.test.DetailCourseActivity
+import com.example.test.LoginActivity
 import com.example.test.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CourseListFragment : Fragment() {
@@ -29,7 +33,19 @@ class CourseListFragment : Fragment() {
         searchField = view.findViewById(R.id.etSearch)
         recyclerView = view.findViewById(R.id.rvCourseList)
 
-        adapter = CourseAdapter(courseList)
+        adapter = CourseAdapter(courseList) { course ->
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                startActivity(Intent(requireContext(), LoginActivity::class.java))
+            } else {
+                val intent = Intent(requireContext(), DetailCourseActivity::class.java)
+                intent.putExtra("id", course.id)
+                intent.putExtra("title", course.title)
+                intent.putExtra("instructor", course.instructor)
+                intent.putExtra("thumbnailUrl", course.thumbnailUrl)
+                startActivity(intent)
+            }
+        }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
