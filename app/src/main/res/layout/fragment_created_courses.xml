@@ -9,6 +9,7 @@
         android:id="@+id/btnAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/yellow"
         android:text="Tambah Course"
         android:layout_gravity="end"
         android:layout_marginBottom="8dp"/>
