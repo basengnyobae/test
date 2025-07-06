@@ -41,7 +41,7 @@ class CreatedCourseFragment : Fragment(R.layout.fragment_created_courses) {
             .addOnSuccessListener { snapshot ->
                 val courses = snapshot.map { doc ->
                     Course(
-                        id = doc.id,
+                        instructorId = doc.id,
                         title = doc.getString("title") ?: "",
                         instructor = doc.getString("instructor") ?: "",
                         thumbnailUrl = doc.getString("thumbnailUrl") ?: ""

@@ -26,7 +26,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 startActivity(Intent(requireContext(), LoginActivity::class.java))
             } else {
                 val intent = Intent(requireContext(), DetailCourseActivity::class.java)
-                intent.putExtra("id", course.id)
+                intent.putExtra("id", course.instructorId)
                 intent.putExtra("title", course.title)
                 intent.putExtra("instructor", course.instructor)
                 intent.putExtra("thumbnailUrl", course.thumbnailUrl)
@@ -49,7 +49,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             .addOnSuccessListener { result ->
                 val courses = result.map { doc ->
                     Course(
-                        id = doc.id,
+                        instructorId = doc.id,
                         title = doc.getString("title") ?: "",
                         instructor = doc.getString("instructor") ?: "",
                         thumbnailUrl = doc.getString("thumbnailUrl") ?: ""

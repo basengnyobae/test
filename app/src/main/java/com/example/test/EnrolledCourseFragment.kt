@@ -36,7 +36,7 @@ class EnrolledCourseFragment : Fragment(R.layout.fragment_enrolled_courses) {
                     .addOnSuccessListener { coursesSnap ->
                         val courses = coursesSnap.map { doc ->
                             Course(
-                                id = doc.id,
+                                instructorId = doc.id,
                                 title = doc.getString("title") ?: "",
                                 instructor = doc.getString("instructor") ?: "",
                                 thumbnailUrl = doc.getString("thumbnailUrl") ?: ""

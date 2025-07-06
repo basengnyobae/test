@@ -21,6 +21,7 @@ class DetailCourseActivity : AppCompatActivity() {
     private var courseId = ""
     private var userId = ""
     private lateinit var enrollButton: Button
+    private lateinit var btnUnenroll: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var rvModules: RecyclerView
     private lateinit var btnAddModule: Button
@@ -52,6 +53,8 @@ class DetailCourseActivity : AppCompatActivity() {
         btnAddModule = findViewById(R.id.btnAddModule)
         btnEditCourse = findViewById(R.id.btnEditCourse)
         btnDeleteCourse = findViewById(R.id.btnDeleteCourse)
+        btnUnenroll = findViewById(R.id.btnUnenroll)
+        btnUnenroll.visibility = View.GONE
 
         // Sembunyikan tombol terlebih dahulu
         btnAddModule.visibility = View.GONE
@@ -101,7 +104,6 @@ class DetailCourseActivity : AppCompatActivity() {
 
                 // Lanjut ke progress & modul
                 checkEnrollmentStatus()
-                loadModulesAndProgress()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal memuat data kursus", Toast.LENGTH_SHORT).show()
@@ -121,11 +123,31 @@ class DetailCourseActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
+                    // Sudah terdaftar
                     enrollButton.text = "Sudah Terdaftar"
                     enrollButton.isEnabled = false
+                    btnUnenroll.visibility = View.VISIBLE
+
+                    btnUnenroll.setOnClickListener {
+                        unenrollFromCourse()
+                    }
+
+                    // Load modul hanya jika sudah daftar
+                    loadModulesAndProgress()
+                } else {
+                    // Belum terdaftar
+                    enrollButton.text = "Daftar Sekarang"
+                    enrollButton.isEnabled = true
+                    btnUnenroll.visibility = View.GONE
+
+                    // Jangan tampilkan modul
+                    rvModules.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                 }
             }
     }
+
+
 
     private fun enrollToCourse() {
         if (userId.isEmpty() || courseId.isEmpty()) return
@@ -143,6 +165,7 @@ class DetailCourseActivity : AppCompatActivity() {
                 Toast.makeText(this, "Berhasil mendaftar kursus", Toast.LENGTH_SHORT).show()
                 enrollButton.text = "Sudah Terdaftar"
                 enrollButton.isEnabled = false
+                checkEnrollmentStatus()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal mendaftar: ${it.message}", Toast.LENGTH_SHORT).show()
@@ -159,7 +182,8 @@ class DetailCourseActivity : AppCompatActivity() {
                         id = doc.id,
                         title = doc.getString("title") ?: "",
                         duration = doc.getString("duration") ?: "",
-                        order = doc.getLong("order")?.toInt() ?: 0
+                        order = doc.getLong("order")?.toInt() ?: 0,
+                        videoUrl = doc.getString("videoUrl") ?: ""
                     )
                 }
 
@@ -262,4 +286,20 @@ class DetailCourseActivity : AppCompatActivity() {
                 Toast.makeText(this, "Gagal menghapus modul: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
+    private fun unenrollFromCourse() {
+        val enrollmentId = "${userId}_$courseId"
+        db.collection("enrollments").document(enrollmentId)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Berhasil membatalkan pendaftaran", Toast.LENGTH_SHORT).show()
+                enrollButton.text = "Daftar Sekarang"
+                enrollButton.isEnabled = true
+                btnUnenroll.visibility = View.GONE
+                checkEnrollmentStatus()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal membatalkan pendaftaran: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }

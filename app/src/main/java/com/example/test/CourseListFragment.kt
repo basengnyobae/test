@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import android.text.Editable
+import android.text.TextWatcher
 
 class CourseListFragment : Fragment() {
 
@@ -34,7 +37,7 @@ class CourseListFragment : Fragment() {
                 startActivity(Intent(requireContext(), LoginActivity::class.java))
             } else {
                 val intent = Intent(requireContext(), DetailCourseActivity::class.java)
-                intent.putExtra("id", course.id)
+                intent.putExtra("id", course.instructorId)
                 intent.putExtra("title", course.title)
                 intent.putExtra("instructor", course.instructor)
                 intent.putExtra("thumbnailUrl", course.thumbnailUrl)
@@ -47,12 +50,16 @@ class CourseListFragment : Fragment() {
 
         loadCourses()
 
-        // Jalankan filter saat pengguna menekan enter
-        searchField.setOnEditorActionListener { _, _, _ ->
-            val keyword = searchField.text.toString().trim()
-            filterCourses(keyword)
-            true
-        }
+        searchField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val keyword = s.toString().trim()
+                filterCourses(keyword)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
 
         return view
     }
@@ -64,15 +71,20 @@ class CourseListFragment : Fragment() {
                 courseList.clear()
                 for (doc in result) {
                     val course = doc.toObject(Course::class.java)
-                    course.id = doc.id // ← ini penting
+                    course.instructorId = doc.id
                     courseList.add(course)
                 }
+
+
+                Toast.makeText(requireContext(), "Loaded ${courseList.size} courses", Toast.LENGTH_SHORT).show()
+
                 adapter.updateList(courseList)
             }
             .addOnFailureListener {
-                // Opsional: tambahkan log/Toast jika gagal
+                Toast.makeText(requireContext(), "Gagal memuat data", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     private fun filterCourses(keyword: String) {
         val filtered = courseList.filter {

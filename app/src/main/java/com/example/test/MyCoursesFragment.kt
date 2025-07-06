@@ -14,19 +14,15 @@ class MyCoursesFragment : Fragment(R.layout.fragment_my_courses) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val user = FirebaseAuth.getInstance().currentUser
 
-        // Cek apakah user belum login
         if (user == null) {
-            // Arahkan ke LoginActivity dan tutup fragment
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
 
-            // Optional: Jika menggunakan BottomNavigation, kembali ke tab Home
             requireActivity().findViewById<ViewPager2?>(R.id.viewPager)?.currentItem = 0
 
             return
         }
 
-        // Jika sudah login, tampilkan tab course seperti biasa
         val viewPager = view.findViewById<ViewPager2>(R.id.viewPager)
         val tabLayout = view.findViewById<TabLayout>(R.id.tabLayout)
 
