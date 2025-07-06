@@ -24,6 +24,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/yellow"
         android:text="Login" />
 
     <LinearLayout
@@ -43,6 +44,7 @@
             android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/yellow"
             android:layout_marginLeft="10dp"
             android:text="Daftar" />
     </LinearLayout>
