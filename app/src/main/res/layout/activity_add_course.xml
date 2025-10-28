@@ -9,15 +9,24 @@
         android:id="@+id/etCourseTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Judul Kursus" />
+        android:hint="Judul Kursus"
+        android:inputType="textCapWords" />
 
     <EditText
         android:id="@+id/etCourseThumbnail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="URL Gambar Thumbnail"
+        android:inputType="textUri"
         android:layout_marginTop="12dp" />
 
+    <EditText
+        android:id="@+id/etCoursePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Harga (cth: 50000)"
+        android:inputType="number"
+        android:layout_marginTop="12dp" />
     <Button
         android:id="@+id/btnSaveCourse"
         android:layout_width="match_parent"

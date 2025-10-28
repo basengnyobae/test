@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    tools:context=".DetailCourseActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/ivDetailThumbnail"
@@ -19,7 +21,7 @@
             android:id="@+id/tvDetailTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Course Title"
+            android:text="Memuat judul..."
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
@@ -28,7 +30,7 @@
             android:id="@+id/tvDetailInstructor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Instructor Name"
+            android:text="Memuat instruktur..."
             android:textSize="16sp"
             android:layout_marginTop="6dp" />
 
@@ -37,39 +39,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/yellow"
-            android:text="Enroll"
+            android:text="Memuat..."
             android:layout_marginTop="24dp" />
 
         <Button
-            android:id="@+id/btnUnenroll"
+            android:id="@+id/btnViewModules"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Batalkan Pendaftaran"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"/>
-
-        <ProgressBar
-            android:id="@+id/progressBarCourse"
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:layout_marginTop="24dp"
-            android:progress="0"
-            android:max="100"
-            style="?android:attr/progressBarStyleHorizontal" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvModules"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
+            android:text="Lihat Modul Kursus"
+            android:backgroundTint="@color/teal_700"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
         <Button
-            android:id="@+id/btnEditCourse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Course"
-            android:visibility="gone"
-            android:layout_marginTop="12dp"/>
+        android:id="@+id/btnEditCourse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Course"
+        android:visibility="gone"
+        android:layout_marginTop="12dp"/>
 
         <Button
             android:id="@+id/btnAddModule"
@@ -86,7 +73,8 @@
             android:text="Hapus Course"
             android:backgroundTint="@color/design_default_color_error"
             android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

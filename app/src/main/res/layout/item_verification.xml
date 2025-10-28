@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/search_bar_background"> <TextView
+    android:id="@+id/tvVerificationCourse"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Course: Belajar Kotlin"
+    android:textStyle="bold"
+    android:textColor="@android:color/black"
+    android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvVerificationUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User: Budi (Rp 50000)"
+        android:layout_marginTop="4dp" />
+
+    <Button
+        android:id="@+id/btnApprovePayment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Setujui Pembayaran"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

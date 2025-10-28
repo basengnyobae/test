@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.example.test.Module
 
 class AddModuleActivity : AppCompatActivity() {
     private lateinit var courseId: String
@@ -16,12 +17,19 @@ class AddModuleActivity : AppCompatActivity() {
     private lateinit var btnUpload: Button
     private lateinit var progressBar: ProgressBar
 
+    private val db = Firebase.firestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_add_module)
 
         courseId = intent.getStringExtra("courseId") ?: ""
+        if (courseId.isEmpty()) {
+            Toast.makeText(this, "Error: Course ID tidak ditemukan", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         edtTitle = findViewById(R.id.edtModuleTitle)
         edtDuration = findViewById(R.id.edtModuleDuration)
@@ -52,24 +60,36 @@ class AddModuleActivity : AppCompatActivity() {
 
     private fun saveModuleToFirestore(title: String, duration: String, videoUrl: String) {
         val db = Firebase.firestore
-        val moduleData = hashMapOf(
-            "title" to title,
-            "duration" to duration,
-            "videoUrl" to videoUrl,
-            "order" to System.currentTimeMillis()
-        )
-
-        db.collection("courses").document(courseId)
+        val modulesCollection = db.collection("courses").document(courseId)
             .collection("modules")
-            .add(moduleData)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Modul berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-                finish()
+
+        modulesCollection.get()
+            .addOnSuccessListener { snapshot ->
+                val newOrder = snapshot.size()
+
+                val newModule = Module(
+                    id = "",
+                    title = title,
+                    duration = duration,
+                    videoUrl = videoUrl,
+                    order = newOrder
+                )
+
+                modulesCollection.add(newModule)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Modul berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Gagal menyimpan modul: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnCompleteListener {
+                        progressBar.visibility = View.GONE
+                        btnUpload.isEnabled = true
+                    }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Gagal menyimpan modul: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
-            .addOnCompleteListener {
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Gagal mengambil data modul: ${e.message}", Toast.LENGTH_SHORT).show()
                 progressBar.visibility = View.GONE
                 btnUpload.isEnabled = true
             }

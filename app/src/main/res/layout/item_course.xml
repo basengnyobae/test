@@ -3,15 +3,14 @@
     android:orientation="horizontal"
     android:padding="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/ivThumbnail"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="12dp"
-        android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray" />
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"> <ImageView
+    android:id="@+id/ivThumbnail"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginEnd="12dp"
+    android:scaleType="centerCrop"
+    android:background="@android:color/darker_gray" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,6 +21,7 @@
 
         <TextView
             android:id="@+id/tvCourseTitle"
+            android:text="Judul Course"
             android:textStyle="bold"
             android:textSize="16sp"
             android:maxLines="1"
@@ -31,10 +31,20 @@
 
         <TextView
             android:id="@+id/tvInstructor"
+            android:text="Nama Instruktur"
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <TextView
+            android:id="@+id/tvCoursePrice"
+            android:text="Rp 50000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 </LinearLayout>

@@ -39,10 +39,19 @@ class RegisterActivity : AppCompatActivity() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
+                            val firebaseUser = auth.currentUser
+                            firebaseUser?.sendEmailVerification()
+                                ?.addOnCompleteListener { verificationTask ->
+                                    if (verificationTask.isSuccessful) {
+                                    } else {
+                                        Toast.makeText(this, "Gagal kirim email verifikasi.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             val userId = auth.currentUser?.uid
                             val user = hashMapOf(
                                 "name" to name,
-                                "email" to email
+                                "email" to email,
+                                "role" to "user"
                             )
 
                             if (userId != null) {
@@ -72,10 +81,11 @@ class RegisterActivity : AppCompatActivity() {
     private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Pendaftaran Berhasil")
-        builder.setMessage("Akun berhasil dibuat. Silakan login untuk melanjutkan.")
+        builder.setMessage("Akun berhasil dibuat. Kami telah mengirimkan **link verifikasi** ke email Anda. Silakan cek inbox (dan folder spam) Anda sebelum login.")
         builder.setCancelable(false)
         builder.setPositiveButton("Login") { dialog, _ ->
             dialog.dismiss()
+            auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()

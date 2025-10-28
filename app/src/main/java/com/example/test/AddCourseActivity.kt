@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.example.test.Course
 
 class AddCourseActivity : AppCompatActivity() {
     private val db = Firebase.firestore
@@ -20,33 +21,38 @@ class AddCourseActivity : AppCompatActivity() {
 
         val etTitle = findViewById<EditText>(R.id.etCourseTitle)
         val etThumbnailUrl = findViewById<EditText>(R.id.etCourseThumbnail)
+        val etPrice = findViewById<EditText>(R.id.etCoursePrice)
         val btnSave = findViewById<Button>(R.id.btnSaveCourse)
 
         btnSave.setOnClickListener {
             val title = etTitle.text.toString().trim()
             val thumbnailUrl = etThumbnailUrl.text.toString().trim()
+            val priceString = etPrice.text.toString().trim()
             val instructorId = auth.currentUser?.uid ?: return@setOnClickListener
 
-            if (title.isEmpty() || thumbnailUrl.isEmpty()) {
-                Toast.makeText(this, "Lengkapi semua data", Toast.LENGTH_SHORT).show()
+            if (title.isEmpty() || thumbnailUrl.isEmpty() || priceString.isEmpty()) {
+                Toast.makeText(this, "Lengkapi semua data (Judul, URL, dan Harga)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // 🔽 Ambil nama dari koleksi 'users'
+            val price = priceString.toLongOrNull() ?: 0L
+
             db.collection("users").document(instructorId)
                 .get()
                 .addOnSuccessListener { doc ->
                     val instructorName = doc.getString("name") ?: "Instruktur"
 
-                    val courseData = hashMapOf(
-                        "title" to title,
-                        "thumbnailUrl" to thumbnailUrl,
-                        "instructor" to instructorName,
-                        "instructorId" to instructorId
+                    val newCourse = Course(
+                        id = "",
+                        title = title,
+                        thumbnailUrl = thumbnailUrl,
+                        instructor = instructorName,
+                        instructorId = instructorId,
+                        price = price
                     )
 
                     db.collection("courses")
-                        .add(courseData)
+                        .add(newCourse)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Course berhasil ditambahkan", Toast.LENGTH_SHORT).show()
                             finish()

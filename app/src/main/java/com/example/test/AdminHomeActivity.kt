@@ -1,34 +1,32 @@
 package com.example.test
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.test.CourseListFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
 
-class MainActivity : AppCompatActivity() {
+class AdminHomeActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_admin_home)
 
-        loadFragment(HomeFragment())
+        loadFragment(CourseListFragment())
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.home -> {
-                    loadFragment(HomeFragment())
+                R.id.admin_courses -> {
+                    loadFragment(CourseListFragment())
                     true
                 }
-                R.id.akun -> {
+                R.id.admin_verify -> {
+                    loadFragment(VerificationFragment())
+                    true
+                }
+                R.id.admin_account -> {
                     loadFragment(AccountFragment())
-                    true
-                }
-                R.id.my_courses -> {
-                    loadFragment(MyCoursesFragment())
                     true
                 }
                 else -> false

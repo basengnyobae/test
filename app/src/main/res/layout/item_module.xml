@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/tvModuleTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Judul Modul"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        android:text="Nama Modul"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvModuleDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Durasi"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
+        android:text="Durasi: 10 menit" />
 
     <CheckBox
         android:id="@+id/cbModuleCompleted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selesai" />
+        android:text="Tandai Selesai" />
 
     <Button
         android:id="@+id/btnDeleteModule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hapus Modul"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"/> <!-- Akan ditampilkan hanya jika user instruktur -->
+        android:visibility="gone" />
 
 </LinearLayout>

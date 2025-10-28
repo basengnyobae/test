@@ -12,36 +12,66 @@ class EditCourseActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private lateinit var courseId: String
 
+    private lateinit var etTitle: EditText
+    private lateinit var etThumbnail: EditText
+    private lateinit var etPrice: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_edit_course)
 
-        val etTitle = findViewById<EditText>(R.id.etEditTitle)
-        val etThumbnail = findViewById<EditText>(R.id.etEditThumbnail)
+        etTitle = findViewById(R.id.etEditTitle)
+        etThumbnail = findViewById(R.id.etEditThumbnail)
+        etPrice = findViewById(R.id.etEditPrice)
         val btnSave = findViewById<Button>(R.id.btnSaveEdit)
 
-        courseId = intent.getStringExtra("courseId") ?: return
+        courseId = intent.getStringExtra("courseId") ?: ""
+        if (courseId.isEmpty()) {
+            Toast.makeText(this, "ID Course tidak valid", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         db.collection("courses").document(courseId).get()
             .addOnSuccessListener { doc ->
-                etTitle.setText(doc.getString("title") ?: "")
-                etThumbnail.setText(doc.getString("thumbnailUrl") ?: "")
+                if (doc != null && doc.exists()) {
+                    etTitle.setText(doc.getString("title") ?: "")
+                    etThumbnail.setText(doc.getString("thumbnailUrl") ?: "")
+
+                    val currentPrice = doc.getLong("price") ?: 0L
+                    etPrice.setText(currentPrice.toString())
+                } else {
+                    Toast.makeText(this, "Course tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Gagal memuat data: ${it.message}", Toast.LENGTH_SHORT).show()
             }
 
         btnSave.setOnClickListener {
             val newTitle = etTitle.text.toString().trim()
             val newThumbnail = etThumbnail.text.toString().trim()
+            val newPriceString = etPrice.text.toString().trim()
+
+            if (newTitle.isEmpty() || newThumbnail.isEmpty() || newPriceString.isEmpty()) {
+                Toast.makeText(this, "Lengkapi semua data (Judul, URL, dan Harga)", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val newPrice = newPriceString.toLongOrNull() ?: 0L
+
+            val updatedData = mapOf(
+                "title" to newTitle,
+                "thumbnailUrl" to newThumbnail,
+                "price" to newPrice
+            )
 
             db.collection("courses").document(courseId)
-                .update(
-                    mapOf(
-                        "title" to newTitle,
-                        "thumbnailUrl" to newThumbnail
-                    )
-                )
+                .update(updatedData)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Course updated", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Course berhasil diupdate", Toast.LENGTH_SHORT).show()
                     finish()
                 }
                 .addOnFailureListener {
