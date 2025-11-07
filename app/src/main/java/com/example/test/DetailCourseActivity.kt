@@ -28,6 +28,7 @@ class DetailCourseActivity : AppCompatActivity() {
     private lateinit var btnAddModule: Button
     private lateinit var btnEditCourse: Button
     private lateinit var btnDeleteCourse: Button
+    private lateinit var tvEnrollmentCount: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +49,10 @@ class DetailCourseActivity : AppCompatActivity() {
         val ivThumbnail = findViewById<ImageView>(R.id.ivDetailThumbnail)
         enrollButton = findViewById(R.id.btnEnroll)
         btnViewModules = findViewById(R.id.btnViewModules)
-
         btnAddModule = findViewById(R.id.btnAddModule)
         btnEditCourse = findViewById(R.id.btnEditCourse)
         btnDeleteCourse = findViewById(R.id.btnDeleteCourse)
+        tvEnrollmentCount = findViewById(R.id.tvEnrollmentCount)
 
         userRole = readUserRoleFromPreferences()
 
@@ -81,6 +82,7 @@ class DetailCourseActivity : AppCompatActivity() {
 
                 if (userRole == "admin") {
                     handleAdminView()
+                    loadEnrollmentCount(courseId)
                 } else {
                     if (userId.isNotEmpty()) {
                         checkEnrollmentStatus()
@@ -125,6 +127,7 @@ class DetailCourseActivity : AppCompatActivity() {
         btnDeleteCourse.visibility = View.VISIBLE
         enrollButton.visibility = View.GONE
         btnViewModules.visibility = View.GONE
+        tvEnrollmentCount.visibility = View.VISIBLE
 
         btnAddModule.setOnClickListener {
             val intent = Intent(this, AddModuleActivity::class.java)
@@ -139,6 +142,19 @@ class DetailCourseActivity : AppCompatActivity() {
         btnDeleteCourse.setOnClickListener {
             deleteCourse(courseId)
         }
+    }
+    private fun loadEnrollmentCount(courseId: String) {
+        db.collection("transactions")
+            .whereEqualTo("courseId", courseId)
+            .whereEqualTo("status", "success")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val count = snapshot.size()
+                tvEnrollmentCount.text = "Total Pendaftar: $count orang"
+            }
+            .addOnFailureListener {
+                tvEnrollmentCount.text = "Gagal memuat pendaftar"
+            }
     }
 
     private fun handleGuestView() {

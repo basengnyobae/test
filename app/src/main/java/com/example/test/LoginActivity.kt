@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -73,6 +74,10 @@ class LoginActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnRegister).setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+
+        findViewById<TextView>(R.id.tvForgotPassword).setOnClickListener {
+            showForgotPasswordDialog()
+        }
     }
 
     private fun showVerificationWarningDialog(user: com.google.firebase.auth.FirebaseUser?) {
@@ -106,5 +111,34 @@ class LoginActivity : AppCompatActivity() {
             putString("USER_ROLE", role)
             apply()
         }
+    }
+
+    private fun showForgotPasswordDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Lupa Password?")
+        builder.setMessage("Masukkan email Anda untuk menerima link reset password.")
+
+        val input = EditText(this)
+        input.hint = "Email Anda"
+        input.inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        builder.setView(input)
+
+        builder.setPositiveButton("Kirim Link") { dialog, _ ->
+            val email = input.text.toString().trim()
+            if (email.isNotEmpty()) {
+                auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Link reset password telah terkirim ke $email", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(this, "Gagal mengirim link: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                Toast.makeText(this, "Email tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.setNegativeButton("Batal") { dialog, _ -> dialog.cancel() }
+        builder.show()
     }
 }

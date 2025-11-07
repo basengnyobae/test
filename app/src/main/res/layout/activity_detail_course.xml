@@ -34,6 +34,19 @@
             android:textSize="16sp"
             android:layout_marginTop="6dp" />
 
+        <TextView
+            android:id="@+id/tvEnrollmentCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Memuat jumlah pendaftar..."
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_palcom"
+            android:layout_marginTop="12dp"
+            android:drawableStart="@drawable/ic_baseline_person_24"
+            android:drawablePadding="8dp"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btnEnroll"
             android:layout_width="match_parent"
