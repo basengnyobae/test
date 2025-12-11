@@ -19,16 +19,20 @@ class DetailCourseActivity : AppCompatActivity() {
     private var courseId = ""
     private var userId = ""
     private var userRole = "user"
-    private var courseTitle: String = ""
+    private var courseTitle = ""
     private var coursePrice: Long = 0
     private var userName: String = "User"
 
+    private lateinit var tvEnrollmentCount: TextView
     private lateinit var enrollButton: Button
     private lateinit var btnViewModules: Button
+
+    private lateinit var btnStartQuiz: Button
+    private lateinit var btnAddQuizQuestion: Button
+
     private lateinit var btnAddModule: Button
     private lateinit var btnEditCourse: Button
     private lateinit var btnDeleteCourse: Button
-    private lateinit var tvEnrollmentCount: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +51,17 @@ class DetailCourseActivity : AppCompatActivity() {
         val tvTitle = findViewById<TextView>(R.id.tvDetailTitle)
         val tvInstructor = findViewById<TextView>(R.id.tvDetailInstructor)
         val ivThumbnail = findViewById<ImageView>(R.id.ivDetailThumbnail)
+        tvEnrollmentCount = findViewById(R.id.tvEnrollmentCount)
+
         enrollButton = findViewById(R.id.btnEnroll)
         btnViewModules = findViewById(R.id.btnViewModules)
+
+        btnStartQuiz = findViewById(R.id.btnStartQuiz)
+        btnAddQuizQuestion = findViewById(R.id.btnAddQuizQuestion)
+
         btnAddModule = findViewById(R.id.btnAddModule)
         btnEditCourse = findViewById(R.id.btnEditCourse)
         btnDeleteCourse = findViewById(R.id.btnDeleteCourse)
-        tvEnrollmentCount = findViewById(R.id.tvEnrollmentCount)
 
         userRole = readUserRoleFromPreferences()
 
@@ -107,6 +116,13 @@ class DetailCourseActivity : AppCompatActivity() {
         btnViewModules.setOnClickListener {
             openModuleList()
         }
+
+        btnStartQuiz.setOnClickListener {
+            val intent = Intent(this, QuizActivity::class.java)
+            intent.putExtra("COURSE_ID", courseId)
+            intent.putExtra("COURSE_TITLE", courseTitle)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
@@ -116,24 +132,30 @@ class DetailCourseActivity : AppCompatActivity() {
         }
     }
 
-    private fun readUserRoleFromPreferences(): String {
-        val sharedPref = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-        return sharedPref.getString("USER_ROLE", "user") ?: "user"
-    }
-
     private fun handleAdminView() {
         btnAddModule.visibility = View.VISIBLE
         btnEditCourse.visibility = View.VISIBLE
         btnDeleteCourse.visibility = View.VISIBLE
+        tvEnrollmentCount.visibility = View.VISIBLE
+
+        btnAddQuizQuestion.visibility = View.VISIBLE
+
         enrollButton.visibility = View.GONE
         btnViewModules.visibility = View.GONE
-        tvEnrollmentCount.visibility = View.VISIBLE
+        btnStartQuiz.visibility = View.GONE
 
         btnAddModule.setOnClickListener {
             val intent = Intent(this, AddModuleActivity::class.java)
             intent.putExtra("courseId", courseId)
             startActivity(intent)
         }
+
+        btnAddQuizQuestion.setOnClickListener {
+            val intent = Intent(this, AddQuestionActivity::class.java)
+            intent.putExtra("COURSE_ID", courseId)
+            startActivity(intent)
+        }
+
         btnEditCourse.setOnClickListener {
             val intent = Intent(this, EditCourseActivity::class.java)
             intent.putExtra("courseId", courseId)
@@ -143,32 +165,12 @@ class DetailCourseActivity : AppCompatActivity() {
             deleteCourse(courseId)
         }
     }
-    private fun loadEnrollmentCount(courseId: String) {
-        db.collection("transactions")
-            .whereEqualTo("courseId", courseId)
-            .whereEqualTo("status", "success")
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val count = snapshot.size()
-                tvEnrollmentCount.text = "Total Pendaftar: $count orang"
-            }
-            .addOnFailureListener {
-                tvEnrollmentCount.text = "Gagal memuat pendaftar"
-            }
-    }
 
     private fun handleGuestView() {
         enrollButton.text = "Login untuk Membeli (Rp $coursePrice)"
         enrollButton.isEnabled = true
         btnViewModules.visibility = View.GONE
-    }
-
-    private fun openModuleList() {
-        val intent = Intent(this, ModuleListActivity::class.java).apply {
-            putExtra("COURSE_ID", courseId)
-            putExtra("COURSE_TITLE", courseTitle)
-        }
-        startActivity(intent)
+        btnStartQuiz.visibility = View.GONE
     }
 
     private fun checkEnrollmentStatus() {
@@ -181,10 +183,12 @@ class DetailCourseActivity : AppCompatActivity() {
                 if (enrolledCourses.contains(courseId)) {
                     enrollButton.visibility = View.GONE
                     btnViewModules.visibility = View.VISIBLE
+                    btnStartQuiz.visibility = View.VISIBLE
                 } else {
                     enrollButton.text = "Beli Course Ini (Rp $coursePrice)"
                     enrollButton.visibility = View.VISIBLE
                     btnViewModules.visibility = View.GONE
+                    btnStartQuiz.visibility = View.GONE
                 }
             }
             .addOnFailureListener {
@@ -193,6 +197,28 @@ class DetailCourseActivity : AppCompatActivity() {
             }
     }
 
+    private fun readUserRoleFromPreferences(): String {
+        val sharedPref = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        return sharedPref.getString("USER_ROLE", "user") ?: "user"
+    }
+
+    private fun loadEnrollmentCount(courseId: String) {
+        db.collection("transactions")
+            .whereEqualTo("courseId", courseId)
+            .whereEqualTo("status", "success")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                tvEnrollmentCount.text = "Total Pendaftar: ${snapshot.size()} orang"
+            }
+    }
+
+    private fun openModuleList() {
+        val intent = Intent(this, ModuleListActivity::class.java).apply {
+            putExtra("COURSE_ID", courseId)
+            putExtra("COURSE_TITLE", courseTitle)
+        }
+        startActivity(intent)
+    }
 
     private fun initiatePayment() {
         if (coursePrice == 0L) {

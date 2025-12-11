@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvQuestionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pertanyaan..."
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/rgOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton android:id="@+id/rbOption0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pilihan A"/>
+        <RadioButton android:id="@+id/rbOption1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pilihan B"/>
+        <RadioButton android:id="@+id/rbOption2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pilihan C"/>
+        <RadioButton android:id="@+id/rbOption3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pilihan D"/>
+    </RadioGroup>
+
+</LinearLayout>

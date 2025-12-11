@@ -18,37 +18,31 @@
         android:theme="@style/Theme.test"
         tools:targetApi="31">
 
-
         <activity android:name=".SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"> <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".SettingsActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".AdminHomeActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".RegisterActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".DetailCourseActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".AddModuleActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".VideoPlayerActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".AddCourseActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".EditCourseActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PaymentActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ModuleListActivity"
-            android:screenOrientation="portrait"/>
+
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait" />
+        <activity android:name=".SettingsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".AdminHomeActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RegisterActivity" android:screenOrientation="portrait" />
+        <activity android:name=".DetailCourseActivity" android:screenOrientation="portrait" />
+        <activity android:name=".AddModuleActivity" android:screenOrientation="portrait" />
+        <activity android:name=".VideoPlayerActivity" android:screenOrientation="portrait" />
+        <activity android:name=".AddCourseActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".EditCourseActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".PaymentActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ModuleListActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".QuizActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".AddQuestionActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".CertificateActivity" android:screenOrientation="portrait"/>
         <activity android:name=".MainActivity"
             android:exported="false"
             android:screenOrientation="portrait">

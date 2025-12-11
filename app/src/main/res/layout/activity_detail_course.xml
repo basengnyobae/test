@@ -63,6 +63,16 @@
             android:backgroundTint="@color/teal_700"
             android:layout_marginTop="16dp"
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnStartQuiz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mulai Ujian Akhir"
+            android:backgroundTint="@color/purple_500"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
         <Button
         android:id="@+id/btnEditCourse"
         android:layout_width="match_parent"
@@ -70,6 +80,15 @@
         android:text="Edit Course"
         android:visibility="gone"
         android:layout_marginTop="12dp"/>
+
+        <Button
+            android:id="@+id/btnAddQuizQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tambah Soal Kuis"
+            android:backgroundTint="@color/teal_700"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnAddModule"
